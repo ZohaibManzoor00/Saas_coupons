@@ -34,3 +34,68 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+```
++------------------+          1       1         +---------------------------+
+|   ProductTable   | <-------------------------> | ProductCustomizationTable |
+|------------------|           (one-to-one)     |---------------------------|
+| id (PK)          |                          1 | id (PK)                   |
+| clerkUserId      |                            | productId (FK, unique)    |
+| name             |                            | classPrefix               |
+| url              |                            | locationMessage           |
+| description      |                            | backgroundColor           |
+| createdAt        |                            | textColor                 |
+| updatedAt        |                            | fontSize                  |
++------------------+                            | bannerContainer           |
+                                                | isSticky                  |
+                                                | createdAt                 |
+                                                | updatedAt                 |
+                                                +---------------------------+
+
+               +-------------------+
+               |   ProductTable    |<-------------------------------------------+
+               |-------------------|          (one-to-many)                    |
+               | id (PK)           |                                          |
+               | ...               |                                          |
+               +-------------------+                                          |
+                       |                                                     |
+                       | 1                                                   | *
+                       |                                                     |
+                       V                                                     V
+             +---------------------+                            +----------------------+
+             | ProductViewTable    |                            | CountryGroupDiscount |
+             |---------------------|                            | Table                |
+             | id (PK)             |                            |----------------------|
+             | productId (FK)      |<-----+                      | countryGroupId (FK)    |
+             | countryId (FK)      |      | (many-to-one)        | productId (FK)         |
+             | visitedAt           |      |                      | coupon                 |
+             +---------------------+      |                      | discountPercentage     |
+                                          |                      | createdAt              |
+                                          |                      | updatedAt              |
+                                          |                      +----------------------+
+                                          |
+                                          |
+                                          |                +----------------------+
+                                          |                |   CountryTable       |
+                                          |                |----------------------|
+                                          |                | id (PK)              |
+                                          +--------------->| name (unique)        |
+                                                           | code (unique)        |
+                                                           | countryGroupId (FK)    |
+                                                           | createdAt            |
+                                                           | updatedAt            |
+                                                           +----------------------+
+                                                                  | 1
+                                                                  |
+                                                                  | (many-to-one)
+                                                                  V
+                                                           +----------------------+
+                                                           | CountryGroupTable    |
+                                                           |----------------------|
+                                                           | id (PK)              |
+                                                           | name (unique)        |
+                                                           | recommendedDiscount  |
+                                                           | createdAt            |
+                                                           | updatedAt            |
+                                                           +----------------------+
+```
