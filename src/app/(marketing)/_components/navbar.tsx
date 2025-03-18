@@ -1,4 +1,5 @@
 import BrandLogo from "@/components/brandLogo";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { type FC } from "react";
 
@@ -20,7 +21,14 @@ const Navbar: FC<NavbarProps> = ({}) => {
         <Link href="#" className="text-lg">
           About
         </Link>
-        <span className="text-lg">{}</span>
+        <span className="text-lg">
+          <SignedIn>
+            <Link href="/dashboard">Dashboard</Link>
+          </SignedIn>
+          <SignedOut>
+            <SignInButton>Login</SignInButton>
+          </SignedOut>
+        </span>
       </nav>
     </header>
   );
