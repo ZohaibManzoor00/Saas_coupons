@@ -50,27 +50,26 @@ const ProductCard = ({ product }: { product: Product }) => {
               {product.name}
             </Link>
           </CardTitle>
-          <Dialog>
-            
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="size-8 p-0">
-                <div className="sr-only">Action Menu</div>
-                <DotsHorizontalIcon className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link href={`/dashboard/products/${product.id}/edit`}>
-                  Edit
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Add to Site</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="size-8 p-0">
+                  <div className="sr-only">Action Menu</div>
+                  <DotsHorizontalIcon className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link href={`/dashboard/products/${product.id}/edit`}>
+                    Edit
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>Add to Site</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Delete</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Dialog>
 
         </div>
