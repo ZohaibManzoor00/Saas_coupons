@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,7 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { type FC } from "react";
+import AddToSiteProductModalContent from "./AddToSiteProductModalContent";
 
 interface Product {
   id: string;
@@ -65,13 +66,15 @@ const ProductCard = ({ product }: { product: Product }) => {
                     Edit
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Add to Site</DropdownMenuItem>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem>Add to Site</DropdownMenuItem>
+                </DialogTrigger>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Delete</DropdownMenuItem>
               </DropdownMenuContent>
+              <AddToSiteProductModalContent id={product.id} />  
             </DropdownMenu>
           </Dialog>
-
         </div>
         <CardDescription>{product.url}</CardDescription>
       </CardHeader>
