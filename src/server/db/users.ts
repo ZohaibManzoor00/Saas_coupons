@@ -7,33 +7,27 @@ export const deleteUser = async (clerkUserId: string) => {
   const [userSubscriptions, products] = await db.batch([
     db
       .delete(UserSubscriptionTable)
-      .where(eq(UserSubscriptionTable.clerkUserId, clerkUserId))
-      .returning({
-        id: UserSubscriptionTable.id,
+      .where(eq(UserSubscriptionTable.clerkUserId, clerkUserId)).returning({
+        id: UserSubscriptionTable.id
       }),
 
-    db
-      .delete(ProductTable)
-      .where(eq(ProductTable.clerkUserId, clerkUserId))
-      .returning({
-        id: ProductTable.id,
-      }),
+    db.delete(ProductTable).where(eq(ProductTable.clerkUserId, clerkUserId)).returning({
+      id: ProductTable.id
+    }),
   ]);
 
   userSubscriptions.forEach((sub) => {
     revalidateDbCache({
       tag: CACHE_TAGS.subscription,
       id: sub.id,
-      userId: clerkUserId,
-    });
-  });
+      userId: clerkUserId 
+    })
+  })
 
   products.forEach((product) => {
     revalidateDbCache({
       tag: CACHE_TAGS.products,
       id: product.id,
-    });
-  });
-
-  return [userSubscriptions, products];
+    })
+  })
 };

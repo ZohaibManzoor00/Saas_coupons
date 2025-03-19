@@ -65,7 +65,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem asChild>
-                    <Link href={`/dashboard/products/${product.id}/edit`}>
+                    <Link href={`/dashboard/products/${product.id}`}>
                       Edit
                     </Link>
                   </DropdownMenuItem>

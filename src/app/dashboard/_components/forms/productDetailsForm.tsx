@@ -16,13 +16,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { productDetailsSchema } from "@/schemas/products";
-import { createProduct } from "@/server/actions/products";
+import { createProduct, updateProduct } from "@/server/actions/products";
 import { toast } from "@/hooks/use-toast";
+import { Product } from "../../products/[productId]/page";
 
-export const ProductDetailsForm = () => {
+export const ProductDetailsForm = ({ product }: { product?: Product }) => {
   const form = useForm<z.infer<typeof productDetailsSchema>>({
     resolver: zodResolver(productDetailsSchema),
-    defaultValues: {
+    defaultValues: product ? { ...product, description: product?.description ?? "" } : {
       name: "",
       url: "",
       description: "",
@@ -30,7 +31,8 @@ export const ProductDetailsForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof productDetailsSchema>) {
-    const data = await createProduct(values);
+    const action = product ? updateProduct.bind(null, product.id) : createProduct 
+    const data = await action(values);
     
     if (data?.message) {
       toast({
