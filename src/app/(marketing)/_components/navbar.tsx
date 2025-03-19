@@ -1,11 +1,8 @@
 import BrandLogo from "@/components/brandLogo";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { type FC } from "react";
 
-interface NavbarProps {}
-
-const Navbar: FC<NavbarProps> = ({}) => {
+const Navbar = () => {
   return (
     <header className="flex py-6 shadow-lg fixed top-0 w-full z-10 bg-background/95">
       <nav className="flex items-center gap-10 container font-semibold">
