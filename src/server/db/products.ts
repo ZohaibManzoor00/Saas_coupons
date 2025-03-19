@@ -1,20 +1,25 @@
 import { db } from "@/drizzle/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { ProductCustomizationTable, ProductTable } from "@/drizzle/schema";
+import {
+  CACHE_TAGS,
+  dbCache,
+  getUserTag,
+  revalidateDbCache,
+} from "@/lib/cache";
 
 export const getProducts = (userId: string, { limit }: { limit?: number }) => {
-  return db.query.ProductTable.findMany({
-    where: ({ clerkUserId }, { eq }) => eq(clerkUserId, userId),
-    orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-    limit,
+  const cacheFn = dbCache(getProductsInternal, {
+    tags: [getUserTag(userId, CACHE_TAGS.products)],
   });
+  return cacheFn(userId, { limit });
 };
 
 export const createProduct = async (data: typeof ProductTable.$inferInsert) => {
   const [newProduct] = await db
     .insert(ProductTable)
     .values(data)
-    .returning({ id: ProductTable.id });
+    .returning({ id: ProductTable.id, userId: ProductTable.clerkUserId });
 
   try {
     await db
@@ -24,8 +29,35 @@ export const createProduct = async (data: typeof ProductTable.$inferInsert) => {
       })
       .onConflictDoNothing({ target: ProductCustomizationTable.productId });
   } catch (e) {
-    await db.delete(ProductTable).where(eq(ProductTable.id, newProduct.id))
+    await db.delete(ProductTable).where(eq(ProductTable.id, newProduct.id));
   }
-
-  return newProduct
+  revalidateDbCache({
+    tag: CACHE_TAGS.products,
+    userId: newProduct.userId,
+    id: newProduct.id,
+  });
+  return newProduct;
 };
+
+export const deleteProduct = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) => {
+  const { rowCount } = await db
+    .delete(ProductTable)
+    .where(and(eq(ProductTable.id, id), eq(ProductTable.clerkUserId, userId)));
+
+  if (rowCount > 0) revalidateDbCache({ tag: CACHE_TAGS.products, userId, id });
+  return rowCount > 0;
+};
+
+function getProductsInternal(userId: string, { limit }: { limit?: number }) {
+  return db.query.ProductTable.findMany({
+    where: ({ clerkUserId }, { eq }) => eq(clerkUserId, userId),
+    orderBy: ({ createdAt }, { desc }) => desc(createdAt),
+    limit,
+  });
+}
